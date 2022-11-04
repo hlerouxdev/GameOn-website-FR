@@ -18,6 +18,24 @@ modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 // launch modal form
 function launchModal() {
   modalbg.style.display = "block";
-}
+};
 
+// Closes modal event
+document.querySelector(".close").addEventListener("click", closeModal);
 
+// Closes modal form
+function closeModal() {
+  modalbg.style.display = "none";
+};
+
+// form input check
+function checkInputs(){
+  formData.map(input => {
+    console.log(input.value);
+  });
+};
+
+// Submit form
+modalBtn.addEventListener("click", (e)=>{
+  e.preventDefault()
+})
