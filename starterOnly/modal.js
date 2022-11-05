@@ -45,7 +45,10 @@ function checkInputs(){
   for (let i=0; i < 5 ; i++) {
     const value = inputsArray[i].querySelector(".text-control").value;
     console.log(value);
-    if(!value) valid = false;
+    if(!value) {
+      errorMessage = "Les champs ne peuvent pas être vides"
+      valid = false;
+    }
   }
 
   // Checks each field individually for regex conmformity
