@@ -33,12 +33,13 @@ function closeModal() {
 const regexlist = {
   name: /^[a-zA-Z ]+$/,
   email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-  date: /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/
+  date: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/
 };
 
 // form input check
 function checkInputs(){
   let valid = true;
+  let errorMessage
   const inputsArray = [...formData];
   // loop checking for empty fields
   for (let i=0; i < 5 ; i++) {
@@ -48,17 +49,32 @@ function checkInputs(){
   }
 
   // Checks each field individually for regex conmformity
-  if(!regexlist.name.test(inputsArray[0].querySelector(".text-control").value)) valid = false;
-  if(!regexlist.name.test(inputsArray[1].querySelector(".text-control").value)) valid = false;
-  if(!regexlist.email.test(inputsArray[2].querySelector(".text-control").value)) valid = false;
-  if(!regexlist.date.test(inputsArray[3].querySelector(".text-control").value)) valid = false;
-  if(inputsArray[4].querySelector(".text-control").value === NaN) valid = false;
+  if(!regexlist.name.test(inputsArray[0].querySelector(".text-control").value)) {
+    errorMessage = "Veuillez entrer un prénom valide"
+    valid = false;
+  }
+  if(!regexlist.name.test(inputsArray[1].querySelector(".text-control").value)) {
+    errorMessage = "Veuillez entrer un nom valide"
+    valid = false;
+  }
+  if(!regexlist.email.test(inputsArray[2].querySelector(".text-control").value)) {
+    errorMessage = "Veuillez entrer un email valide"
+    valid = false;
+  }
+  if(!regexlist.date.test(inputsArray[3].querySelector(".text-control").value)) {
+    errorMessage = "Veuillez entrer une date valide"
+    valid = false;
+  }
+  if(inputsArray[4].querySelector(".text-control").value === NaN) {
+    errorMessage = "Veuillez entrer un nombre"
+    valid = false;
+  }
 
-  return valid;
+  return {valid, errorMessage};
 };
 
 // Submit form
 submitBtn.addEventListener("click", (e)=>{
   e.preventDefault();
-  checkInputs()? alert('ok') : alert('non');
+  checkInputs().valid? alert('ok') : alert(checkInputs().errorMessage);
 })
