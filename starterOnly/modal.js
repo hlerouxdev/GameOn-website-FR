@@ -36,6 +36,24 @@ const regexlist = {
   date: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/
 };
 
+// error class
+
+class Inputerror{
+  constructor(_domElem, _errorMessage) {
+    this.domElem = _domElem,
+    this.errorMessage = _errorMessage
+  }
+  static createError() {
+    this.domElem.setAttribute("data-error", this.errorMessage)
+    this.domElem.setAttribute("data-error-visible", "true")
+  }
+};
+
+function removeError(domElem) {
+  domElem.removeAttribute("data-error")
+  domElem.removeAttribute("data-error-visible")
+};
+
 // form input check
 function checkInputs(){
   let valid = true;
@@ -46,14 +64,16 @@ function checkInputs(){
     const value = inputsArray[i].querySelector(".text-control").value;
     console.log(value);
     if(!value) {
-      errorMessage = "Les champs ne peuvent pas être vides"
+      newError = new Inputerror(inputsArray[i], "Ce champs ne peut être vide")
+      newError.createError
       valid = false;
     }
   }
 
   // Checks each field individually for regex conmformity
   if(!regexlist.name.test(inputsArray[0].querySelector(".text-control").value)) {
-    errorMessage = "Veuillez entrer un prénom valide"
+    errorMessage = new Inputerror(inputsArray[0], "Veuillez entrer un prénom valide")
+    errorMessage.createError
     valid = false;
   }
   if(!regexlist.name.test(inputsArray[1].querySelector(".text-control").value)) {
@@ -73,11 +93,16 @@ function checkInputs(){
     valid = false;
   }
 
-  return {valid, errorMessage};
+  return valid;
 };
 
 // Submit form
 submitBtn.addEventListener("click", (e)=>{
   e.preventDefault();
-  checkInputs().valid? alert('ok') : alert(checkInputs().errorMessage);
+  if(checkInputs()) alert('ok');
+  // [...formData].forEach( dataset => {
+  //   dataset.setAttribute("data-error", "test")
+  //   dataset.setAttribute("data-error-visible", "true")
+  //   console.log(dataset);
+  // })
 })
