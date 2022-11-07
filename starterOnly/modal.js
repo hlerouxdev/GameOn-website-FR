@@ -98,25 +98,25 @@ function checkInputs(){
   }
 
   // read & agree check
-  // let readArgreement = false
-  // if(!formRead.querySelector("input").checked) {
-  //   formRead.setAttribute("data-error", "Vous devez vérifier que vous acceptez les termes et conditions.")
-  //   formRead.setAttribute("data-error-visible", "true")
-  // } else {
-  //   readArgreement = true
-  //   removeError(formRead)
-  // }
+  let readArgreement = false
+  if(!formRead.querySelector("input").checked) {
+    formRead.setAttribute("data-error", "Vous devez vérifier que vous acceptez les termes et conditions.")
+    formRead.setAttribute("data-error-visible", "true")
+  } else {
+    readArgreement = true
+    removeError(formRead)
+  }
 
-  if(!citySelected && !readArgreement) return false
+  if(!citySelected || !readArgreement) valid = false
 
   return valid;
 };
 
-// Submit form
-submitBtn.addEventListener("click", (e)=>{
+// Submit form. The anonylous fuynction has been made asynchronous for future promise based code
+submitBtn.addEventListener("click", async (e)=>{
   e.preventDefault();
   if(!checkInputs()) {
-    console.log("Nein");
+    console.log("Nein!");
     modal.setAttribute("data-error-animation", "true")
     return setTimeout(() => {
       modal.removeAttribute("data-error-animation")
@@ -125,6 +125,16 @@ submitBtn.addEventListener("click", (e)=>{
 
   // fetch request goes here
   //this next part is to be called asynchronuesly after the fetch
-  
+  console.log("ok!");
+  document.querySelector(".modal-body").innerHTML =
+  `<div class="modal-confirmation">
+    <p>Merci pour votre inscription</p>
+    <button class="btn-submit btn-modal-close">Fermer</button>
+  </div>`
+
+  setTimeout(()=> {
+    modal.querySelector("btn-modal-close").addEventListener("click", closeModal()),
+    1100
+  })
 
 })
