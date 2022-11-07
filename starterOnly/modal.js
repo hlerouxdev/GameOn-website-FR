@@ -9,6 +9,7 @@ function editNav() {
 
 // DOM Elements
 const modalbg = document.querySelector(".bground");
+const modal = modalbg.querySelector(".content")
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const submitBtn = document.querySelector(".btn-submit");
@@ -31,7 +32,7 @@ function closeModal() {
 
 // regex list 
 const regexList = {
-  name: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
+  name: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*){3,}$/,
   email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
   date: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/,
   number: /^[1-9][0-9]?$|^100$/
@@ -46,15 +47,16 @@ function removeError(domElem) {
 function handleError(domElem, regex, errorMessage) {
   const value = domElem.querySelector(".text-control").value
   // if(!value) errorMessage = "ce champs ne peut pas être vide"
-  if(!regex.test(value))
   if(regex.test(value) && value) {
     removeError(domElem)
     domElem.setAttribute("data-validated", "true")
     return true
+  } else {
+    domElem.removeAttribute("data-validated")
+    domElem.setAttribute("data-error", errorMessage)
+    domElem.setAttribute("data-error-visible", "true")
+    return false
   }
-  domElem.setAttribute("data-error", errorMessage)
-  domElem.setAttribute("data-error-visible", "true")
-  return false
 };
 
 // form input check
@@ -113,6 +115,16 @@ function checkInputs(){
 // Submit form
 submitBtn.addEventListener("click", (e)=>{
   e.preventDefault();
-  if(checkInputs()) return console.log("ok");
-  console.log("Nein");
+  if(!checkInputs()) {
+    console.log("Nein");
+    modal.setAttribute("data-error-animation", "true")
+    return setTimeout(() => {
+      modal.removeAttribute("data-error-animation")
+    }, 1000);
+  }
+
+  // fetch request goes here
+  //this next part is to be called asynchronuesly after the fetch
+  
+
 })
