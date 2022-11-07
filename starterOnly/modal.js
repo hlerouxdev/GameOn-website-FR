@@ -31,26 +31,30 @@ function closeModal() {
 
 // regex list 
 const regexList = {
-  name: /^[a-zA-Z ]+$/,
+  name: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
   email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
   date: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/,
   number: /^[1-9][0-9]?$|^100$/
 };
 
 // error handling
-function createError(domElem, regex, inputName) {
-  let errorMessage
-  if(!domElem.value) errorMessage = "ce champs ne peut pas être vide"
-  if(!regex.test(domElem.value)) errorMessage = `veuillez entrer un ${inputName}`
-  if(regex.test(domElem.value) && domElem.value) return true
-  domElem.setAttribute("data-error", errorMessage)
-  domElem.setAttribute("data-error-visible", "true")
-  return false
-}
-
 function removeError(domElem) {
   domElem.removeAttribute("data-error")
   domElem.removeAttribute("data-error-visible")
+};
+
+function handleError(domElem, regex, errorMessage) {
+  const value = domElem.querySelector(".text-control").value
+  // if(!value) errorMessage = "ce champs ne peut pas être vide"
+  if(!regex.test(value))
+  if(regex.test(value) && value) {
+    removeError(domElem)
+    domElem.setAttribute("data-validated", "true")
+    return true
+  }
+  domElem.setAttribute("data-error", errorMessage)
+  domElem.setAttribute("data-error-visible", "true")
+  return false
 };
 
 // form input check
@@ -62,14 +66,46 @@ function checkInputs(){
   const formLastName = inputsArray[1];
   const formEmail = inputsArray[2]
   const formDate = inputsArray[3];
-  const formNumber = inputsArray[4]
+  const formNumber = inputsArray[4];
+  const formCity = inputsArray[5];
+  const formRead = inputsArray[6];
 
   // Checks each field for regex validation
-  if(!createError(formFirstName, regexList.name, "prénom valide")) valid = false
-  if(createError(!formLastName, regexList.name, "nom valide")) valid =false
-  if(!createError(formEmail, regexList.email, "email valide")) valid = false
-  if(!createError(formDate, regexList.date, "date valide")) valid = false
-  if(!createError(formNumber, regexList.number, "nombre entre 0 et 100")) valid = false
+  if(!handleError(formFirstName, regexList.name,
+    "Veuillez entrer 2 caractères ou plus pour le champ du prénom.")) valid = false
+  if(!handleError(formLastName, regexList.name,
+    "Veuillez entrer 2 caractères ou plus pour le champ du nom.")) valid =false
+  if(!handleError(formEmail, regexList.email,
+    "Veuillez entrer une addresse mail valide.")) valid = false
+  if(!handleError(formDate, regexList.date,
+    "Vous devez entrer votre date de naissance.")) valid = false
+  if(!handleError(formNumber, regexList.number,
+    "Vous devez entrer un nombre entre 0 et 100")) valid = false
+
+  // city checkbox check
+  let citySelected = false
+  formCity.querySelectorAll("input").forEach(input => {
+    if(input.checked) citySelected = true
+  })
+  if(!citySelected) {
+    formCity.setAttribute("data-error", "Veuillez sélectionner un ville")
+    formCity.setAttribute("data-error-visible", "true")
+    return false 
+  } else {
+    removeError(formCity)
+  }
+
+  // read & agree check
+  // let readArgreement = false
+  // if(!formRead.querySelector("input").checked) {
+  //   formRead.setAttribute("data-error", "Vous devez vérifier que vous acceptez les termes et conditions.")
+  //   formRead.setAttribute("data-error-visible", "true")
+  // } else {
+  //   readArgreement = true
+  //   removeError(formRead)
+  // }
+
+  if(!citySelected && !readArgreement) return false
 
   return valid;
 };
@@ -77,5 +113,6 @@ function checkInputs(){
 // Submit form
 submitBtn.addEventListener("click", (e)=>{
   e.preventDefault();
-  if(checkInputs()) alert('ok');
+  if(checkInputs()) return console.log("ok");
+  console.log("Nein");
 })
