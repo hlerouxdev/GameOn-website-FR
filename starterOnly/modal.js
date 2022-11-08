@@ -46,68 +46,86 @@ function removeError(domElem) {
   domElem.removeAttribute("data-error-visible")
 };
 
-function handleError(domElem, regex, errorMessage) {
+function createError(domElem, errorMessage) {
+  domElem.removeAttribute("data-validated")
+  domElem.setAttribute("data-error", errorMessage)
+  domElem.setAttribute("data-error-visible", "true")
+}
+
+function handleTypeError(domElem, regex, errorMessage) {
   const value = domElem.querySelector(".text-control").value
-  // if(!value) errorMessage = "ce champs ne peut pas être vide"
   if(regex.test(value) && value) {
     removeError(domElem)
     domElem.setAttribute("data-validated", "true")
     return true
   } else {
-    domElem.removeAttribute("data-validated")
-    domElem.setAttribute("data-error", errorMessage)
-    domElem.setAttribute("data-error-visible", "true")
+    createError(domElem, errorMessage);
     return false
   }
 };
 
 const inputsArray = [...formData];
 //indivudual input declaration
-const formFirstName = inputsArray[0];
-const formLastName = inputsArray[1];
-const formEmail = inputsArray[2]
-const formDate = inputsArray[3];
-const formNumber = inputsArray[4];
-const formCity = inputsArray[5];
-const formRead = inputsArray[6];
-
+const form = {
+  firstName: {
+    input: inputsArray[0],
+    errorMessage: "Veuillez entrer 2 caractères ou plus pour le champ du prénom."
+  },
+  lastName:  {
+    input: inputsArray[1],
+    errorMessage: "Veuillez entrer 2 caractères ou plus pour le champ du nom."
+  },
+  email: {
+    input: inputsArray[2],
+    errorMessage: "Veuillez entrer une adresse mail valide."
+  },
+  date: {
+    input: inputsArray[3],
+    errorMessage: "Veuillez entrer une date valide."
+  },
+  number: {
+    input: inputsArray[4],
+    errorMessage: "Vous devez entrer un nombre entre 0 et 99"
+  },
+  city: {
+    input: inputsArray[5],
+    errorMessage: "Veuillez sélectionner une ville"
+  },
+  read: {
+    input: inputsArray[6],
+    errorMessage: "Vous devez avoir lu et approuvé les conditions d'utilisation"
+  }
+}
 // form input check
 function checkInputs(){
   let valid = true;
 
   // Checks each field for regex validation
-  if(!handleError(formFirstName, regexList.name,
-    "Veuillez entrer 2 caractères ou plus pour le champ du prénom.")) valid = false
-  if(!handleError(formLastName, regexList.name,
-    "Veuillez entrer 2 caractères ou plus pour le champ du nom.")) valid =false
-  if(!handleError(formEmail, regexList.email,
-    "Veuillez entrer une addresse mail valide.")) valid = false
-  if(!handleError(formDate, regexList.date,
-    "Vous devez entrer votre date de naissance.")) valid = false
-  if(!handleError(formNumber, regexList.number,
-    "Vous devez entrer un nombre entre 0 et 99")) valid = false
+  if(!handleTypeError(form.firstName.input, regexList.name, form.firstName.errorMessage)) valid = false
+  if(!handleTypeError(form.lastName.input, regexList.name, form.lastName.errorMessage)) valid =false
+  if(!handleTypeError(form.email.input, regexList.email,form.email.errorMessage)) valid = false
+  if(!handleTypeError(form.date.input, regexList.date, form.date.errorMessage)) valid = false
+  if(!handleTypeError(form.number.input, regexList.number, form.number.errorMessage)) valid = false
 
   // city checkbox check
   let citySelected = false
-  formCity.querySelectorAll("input").forEach(input => {
+  form.city.input.querySelectorAll("input").forEach(input => {
     if(input.checked) citySelected = true
   })
   if(!citySelected) {
-    formCity.setAttribute("data-error", "Veuillez sélectionner un ville")
-    formCity.setAttribute("data-error-visible", "true")
+    createError(form.city.input, form.city.errorMessage)
   } else {
-    removeError(formCity)
+    removeError(form.city.input)
   }
 
   // read & agree check
   let readArgreement = false
-  console.log(formRead.querySelector("input").checked);
-  if(!formRead.querySelector("input").checked) {
-    formRead.setAttribute("data-error", "Vous devez vérifier que vous acceptez les termes et conditions.")
-    formRead.setAttribute("data-error-visible", "true")
+  console.log(form.read.input.querySelector("input").checked);
+  if(!form.read.input.querySelector("input").checked) {
+    createError(form.read.input, form.read.errorMessage)
   } else {
     readArgreement = true
-    removeError(formRead)
+    removeError(form.read.input)
   }
 
   if(!citySelected || !readArgreement) valid = false
