@@ -536,16 +536,16 @@ footer {
 }
 
 .content[data-error-animation="true"] {
-  animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+  animation:
+    shake 1s cubic-bezier(.36,.07,.19,.97) forwards,
+    border-fade ease-out 1.5s forwards;
   transform: translate3d(0, 0, 0);
   perspective: 1000px;
-  border: #e54858 transparent;
 }
 
 @keyframes shake {
   10%, 90% {
     transform: translate3d(-1px, 0, 0);
-    border: #fe142f solid 2px;
   }
   20%, 80% {
     transform: translate3d(2px, 0, 0);
@@ -557,7 +557,15 @@ footer {
     transform: translate3d(4px, 0, 0);
   }
   60%, 100% {
-    border: #e54858 transparent 5px;
+  }
+}
+
+@keyframes border-fade {
+  from {
+    border: #e54858 solid 4px;
+  }
+  to {
+    border: transparent;
   }
 }
 

@@ -23,7 +23,9 @@ function launchModal() {
 };
 
 // Closes modal event
-document.querySelector(".close").addEventListener("click", closeModal);
+modal.addEventListener("click", (e) => {
+  if(e.target.className === "close" || e.target.classList.contains("btn-modal-close")) closeModal();
+});
 
 // Closes modal form
 function closeModal() {
@@ -32,10 +34,10 @@ function closeModal() {
 
 // regex list 
 const regexList = {
-  name: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*){3,}$/,
+  name: /^[A-Za-zÀ-ÿ]{2,}(([',. -][A-Za-zÀ-ÿ])?[A-Za-zÀ-ÿ]*)$/,
   email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
   date: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/,
-  number: /^[1-9][0-9]?$|^100$/
+  number: /^[0-9][0-9]?$|^99$/
 };
 
 // error handling
@@ -59,18 +61,19 @@ function handleError(domElem, regex, errorMessage) {
   }
 };
 
+const inputsArray = [...formData];
+//indivudual input declaration
+const formFirstName = inputsArray[0];
+const formLastName = inputsArray[1];
+const formEmail = inputsArray[2]
+const formDate = inputsArray[3];
+const formNumber = inputsArray[4];
+const formCity = inputsArray[5];
+const formRead = inputsArray[6];
+
 // form input check
 function checkInputs(){
   let valid = true;
-  const inputsArray = [...formData];
-  //indivudual input declaration
-  const formFirstName = inputsArray[0];
-  const formLastName = inputsArray[1];
-  const formEmail = inputsArray[2]
-  const formDate = inputsArray[3];
-  const formNumber = inputsArray[4];
-  const formCity = inputsArray[5];
-  const formRead = inputsArray[6];
 
   // Checks each field for regex validation
   if(!handleError(formFirstName, regexList.name,
@@ -82,7 +85,7 @@ function checkInputs(){
   if(!handleError(formDate, regexList.date,
     "Vous devez entrer votre date de naissance.")) valid = false
   if(!handleError(formNumber, regexList.number,
-    "Vous devez entrer un nombre entre 0 et 100")) valid = false
+    "Vous devez entrer un nombre entre 0 et 99")) valid = false
 
   // city checkbox check
   let citySelected = false
@@ -92,13 +95,13 @@ function checkInputs(){
   if(!citySelected) {
     formCity.setAttribute("data-error", "Veuillez sélectionner un ville")
     formCity.setAttribute("data-error-visible", "true")
-    return false 
   } else {
     removeError(formCity)
   }
 
   // read & agree check
   let readArgreement = false
+  console.log(formRead.querySelector("input").checked);
   if(!formRead.querySelector("input").checked) {
     formRead.setAttribute("data-error", "Vous devez vérifier que vous acceptez les termes et conditions.")
     formRead.setAttribute("data-error-visible", "true")
@@ -126,15 +129,25 @@ submitBtn.addEventListener("click", async (e)=>{
   // fetch request goes here
   //this next part is to be called asynchronuesly after the fetch
   console.log("ok!");
-  document.querySelector(".modal-body").innerHTML =
-  `<div class="modal-confirmation">
-    <p>Merci pour votre inscription</p>
-    <button class="btn-submit btn-modal-close">Fermer</button>
-  </div>`
 
-  setTimeout(()=> {
-    modal.querySelector("btn-modal-close").addEventListener("click", closeModal()),
-    1100
-  })
+  //DOM modifications, removes the form and creates the confirmation elements
+  const modalBody = document.querySelector(".modal-body")
+  const modalForm = document.querySelector("form");
+  modalForm.style.display = "none";
+  
+
+  const modalConfirmation = document.createElement("div");
+  modalConfirmation.setAttribute("class", "modal-confirmation");
+
+  const confirmationP = document.createElement("p");
+  confirmationP.innerText = "Merci pour votre inscription";
+
+  const confirmationBtn = document.createElement("button");
+  confirmationBtn.innerText = "Fermer";
+  confirmationBtn.setAttribute("class", "btn-submit btn-modal-close");
+
+  modalConfirmation.appendChild(confirmationP);
+  modalConfirmation.appendChild(confirmationBtn);
+  modalBody.appendChild(modalConfirmation);
 
 })
