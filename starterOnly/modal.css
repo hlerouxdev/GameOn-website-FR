@@ -97,7 +97,7 @@ img {
   .topnav a.icon {
     float: right;
     display: block;
-    margin-top: -15px;
+    /* margin-top: -15px; */
   }
 } 
 
@@ -515,6 +515,9 @@ footer {
   .copyrights {
     margin-top: 50px;
     text-align: center;
+  }
+  .icon {
+    margin-top: 0;
   }
 }
 
