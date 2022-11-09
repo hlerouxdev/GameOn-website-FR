@@ -19,6 +19,10 @@ modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
 // launch modal form
 function launchModal() {
+  const validation = document.querySelector(".modal-confirmation")
+  if(validation) document.querySelector(".modal-body").removeChild(validation)
+  const modalForm = document.querySelector("form");
+  modalForm.style.display = "block";
   modalbg.style.display = "block";
 };
 
@@ -67,7 +71,6 @@ function handleError({domElem, inputType, errorMessage, regex}) {
   }
   if (inputType === "checkbox") {
     value = domElem.querySelector("input").checked
-    console.log("read ", domElem.querySelector("input"));
     if (!value) {
       createError(domElem, errorMessage);
       return false
@@ -77,7 +80,6 @@ function handleError({domElem, inputType, errorMessage, regex}) {
     boxes = domElem.querySelectorAll("input")
     let checked = false
     boxes.forEach( input => {
-      console.log(input);
       if(input.checked) checked = true
     })
     if(!checked) {
@@ -135,11 +137,17 @@ const form = {
   }
 };
 
-//Inconclusive input change event listener
-// [...form].forEach(elem => {
-//   elem.addEventListener("change", handleError(elem))
-// })
-// form input check
+function resetForm() {
+  [...formData][0].querySelector(".text-control").value = "";
+  [...formData][1].querySelector(".text-control").value = "";
+  [...formData][2].querySelector(".text-control").value = "";
+  [...formData][3].querySelector(".text-control").value = "";
+  [...formData][4].querySelector(".text-control").value = "";
+
+  [...formData][5].querySelectorAll("input").forEach(input => {
+    input.checked = false
+  });
+};
 
 function checkInputs(){
   let valid = true
@@ -170,15 +178,13 @@ submitBtn.addEventListener("click", (e)=>{
   modalForm.style.display = "none";
 
   // The validation is being called after the timeout but it can be reworked so that the loader only appears during an actual loading time
-  createLoader(document.querySelector(".modal-body"))
   createValidation(document.querySelector(".modal-body"))
+  resetForm();
 })
 
 //DOM modifications, removes the form and creates the confirmation elements
 
 function createValidation(parentElem) {
-  const loader = parentElem.querySelector(".loader")
-  if(loader) parentElem.removeChild(loader)
   
   const modalConfirmation = document.createElement("div");
   modalConfirmation.setAttribute("class", "modal-confirmation");
