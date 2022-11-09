@@ -159,46 +159,22 @@ function checkInputs(){
   return valid;
 };
 
-// Submit form. The anonymous function has been made asynchronous for future promise based code
-submitBtn.addEventListener("click", async (e)=>{
+// Submit function
+submitBtn.addEventListener("click", (e)=>{
   e.preventDefault();
-  if(!checkInputs()) {
-    console.log("Nein!");
-    modal.setAttribute("data-error-animation", "true")
-    return setTimeout(() => {
-      modal.removeAttribute("data-error-animation")
-    }, 1000);
-  }
+  if(!checkInputs()) return
 
   // fetch request goes here
   //this next part is to be called asynchronuesly after the fetch
-  console.log("ok!");
   const modalForm = document.querySelector("form");
   modalForm.style.display = "none";
 
   // The validation is being called after the timeout but it can be reworked so that the loader only appears during an actual loading time
   createLoader(document.querySelector(".modal-body"))
-  setTimeout(()=> {
-    createValidation(document.querySelector(".modal-body"))
-  }, 2000)
+  createValidation(document.querySelector(".modal-body"))
 })
 
 //DOM modifications, removes the form and creates the confirmation elements
-function createLoader(parentlem) {
-  const loader = document.createElement("div")
-  loader.setAttribute("class", "loader")
-
-  const loaderMessage = document.createElement("h2")
-  loaderMessage.innerText = "Chargement"
-
-  const loaderEllipses = document.createElement("div")
-  loaderEllipses.setAttribute("class", "loader-ellipses")
-  loaderEllipses.innerHTML = "<span></span><span></span><span></span>"
-
-  loader.appendChild(loaderMessage)
-  loader.appendChild(loaderEllipses)
-  parentlem.appendChild(loader)
-};
 
 function createValidation(parentElem) {
   const loader = parentElem.querySelector(".loader")
