@@ -143,7 +143,6 @@ function resetForm() {
   [...formData][2].querySelector(".text-control").value = "";
   [...formData][3].querySelector(".text-control").value = "";
   [...formData][4].querySelector(".text-control").value = "";
-
   [...formData][5].querySelectorAll("input").forEach(input => {
     input.checked = false
   });
@@ -170,7 +169,7 @@ function checkInputs(){
 // Submit function
 submitBtn.addEventListener("click", (e)=>{
   e.preventDefault();
-  if(!checkInputs()) return
+  // if(!checkInputs()) return
 
   // fetch request goes here
   //this next part is to be called asynchronuesly after the fetch
@@ -183,13 +182,12 @@ submitBtn.addEventListener("click", (e)=>{
 })
 
 //DOM modifications, removes the form and creates the confirmation elements
-
 function createValidation(parentElem) {
   
   const modalConfirmation = document.createElement("div");
   modalConfirmation.setAttribute("class", "modal-confirmation");
   
-  const confirmationP = document.createElement("p");
+  const confirmationP = document.createElement("h2");
   confirmationP.innerText = "Merci pour votre inscription";
   
   const confirmationBtn = document.createElement("button");
