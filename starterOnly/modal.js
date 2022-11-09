@@ -135,10 +135,12 @@ const form = {
   }
 };
 
+//Inconclusive input change event listener
 // [...form].forEach(elem => {
 //   elem.addEventListener("change", handleError(elem))
 // })
 // form input check
+
 function checkInputs(){
   let valid = true
 
@@ -157,7 +159,7 @@ function checkInputs(){
   return valid;
 };
 
-// Submit form. The anonylous fuynction has been made asynchronous for future promise based code
+// Submit form. The anonymous function has been made asynchronous for future promise based code
 submitBtn.addEventListener("click", async (e)=>{
   e.preventDefault();
   if(!checkInputs()) {
@@ -171,17 +173,36 @@ submitBtn.addEventListener("click", async (e)=>{
   // fetch request goes here
   //this next part is to be called asynchronuesly after the fetch
   console.log("ok!");
-  createValidation()
+  const modalForm = document.querySelector("form");
+  modalForm.style.display = "none";
+
+  // The validation is being called after the timeout but it can be reworked so that the loader only appears during an actual loading time
+  createLoader(document.querySelector(".modal-body"))
+  setTimeout(()=> {
+    createValidation(document.querySelector(".modal-body"))
+  }, 2000)
 })
 
 //DOM modifications, removes the form and creates the confirmation elements
+function createLoader(parentlem) {
+  const loader = document.createElement("div")
+  loader.setAttribute("class", "loader")
 
-function createValidation() {
+  const loaderMessage = document.createElement("h2")
+  loaderMessage.innerText = "Chargement"
 
-  const modalBody = document.querySelector(".modal-body")
-  const modalForm = document.querySelector("form");
-  modalForm.style.display = "none";
-  
+  const loaderEllipses = document.createElement("div")
+  loaderEllipses.setAttribute("class", "loader-ellipses")
+  loaderEllipses.innerHTML = "<span></span><span></span><span></span>"
+
+  loader.appendChild(loaderMessage)
+  loader.appendChild(loaderEllipses)
+  parentlem.appendChild(loader)
+};
+
+function createValidation(parentElem) {
+  const loader = parentElem.querySelector(".loader")
+  if(loader) parentElem.removeChild(loader)
   
   const modalConfirmation = document.createElement("div");
   modalConfirmation.setAttribute("class", "modal-confirmation");
@@ -195,5 +216,5 @@ function createValidation() {
   
   modalConfirmation.appendChild(confirmationP);
   modalConfirmation.appendChild(confirmationBtn);
-  modalBody.appendChild(modalConfirmation);
-}
+  parentElem.appendChild(modalConfirmation);
+};

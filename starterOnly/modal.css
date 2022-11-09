@@ -462,6 +462,7 @@ input[data-error]::after {
   height: 100%;
   display: block;
   padding: 0;
+  object-fit: cover;
 }
 .copyrights {
   color: #fe142f;
@@ -586,4 +587,55 @@ footer {
 .btn-modal-close {
   position: absolute;
   bottom: 10px;
+}
+
+/* -------------------------- Loader ------------------------------*/
+
+.loader{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 4em 0;
+}
+
+.loader h2 {
+  margin-bottom: 2em;
+}
+
+.loader-ellipses{
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
+}
+
+.loader-ellipses span{
+  background-color: rgba(77, 0, 0, 0.514);
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: loader-grow 2000ms infinite alternate;
+}
+
+.loader-ellipses span:nth-child(2){
+  animation-delay: 400ms;
+}
+
+.loader-ellipses span:nth-child(3){
+  animation-delay: 800ms;
+}
+
+@keyframes loader-grow {
+  to{
+    transform: scale(1.2);
+    background-color: #f00;
+    opacity: 100%;
+  }
+}
+
+@keyframes rotate{
+  to{
+    transform: rotate(360deg);
+  }
 }
