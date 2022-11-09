@@ -41,93 +41,117 @@ const regexList = {
 };
 
 // error handling
+
+//removes the error message
 function removeError(domElem) {
   domElem.removeAttribute("data-error")
   domElem.removeAttribute("data-error-visible")
 };
 
+// creates the error message
 function createError(domElem, errorMessage) {
   domElem.removeAttribute("data-validated")
   domElem.setAttribute("data-error", errorMessage)
   domElem.setAttribute("data-error-visible", "true")
 }
 
-function handleTypeError(domElem, regex, errorMessage) {
-  const value = domElem.querySelector(".text-control").value
-  if(regex.test(value) && value) {
-    removeError(domElem)
-    domElem.setAttribute("data-validated", "true")
-    return true
-  } else {
-    createError(domElem, errorMessage);
-    return false
+//checks if the a string/digit input follows a given regex
+function handleError({domElem, inputType, errorMessage, regex}) {
+  let value
+  if (inputType === "text") { //verification for text inputs
+    value = domElem.querySelector(".text-control").value
+    if(!regex.test(value) || !value) {
+      createError(domElem, errorMessage);
+      return false
+    }
   }
+  if (inputType === "checkbox") {
+    value = domElem.querySelector("input").checked
+    console.log("read ", domElem.querySelector("input"));
+    if (!value) {
+      createError(domElem, errorMessage);
+      return false
+    }
+  }
+  if (inputType === "checkboxgroup") {
+    boxes = domElem.querySelectorAll("input")
+    let checked = false
+    boxes.forEach( input => {
+      console.log(input);
+      if(input.checked) checked = true
+    })
+    if(!checked) {
+      createError(domElem, errorMessage);
+      return false 
+    }
+  }
+
+  removeError(domElem)
+  domElem.setAttribute("data-validated", "true")
+  return true
 };
 
-const inputsArray = [...formData];
 //indivudual input declaration
 const form = {
   firstName: {
-    input: inputsArray[0],
+    domElem: [...formData][0],
+    inputType: "text",
+    regex: regexList.name,
     errorMessage: "Veuillez entrer 2 caractères ou plus pour le champ du prénom."
   },
   lastName:  {
-    input: inputsArray[1],
+    domElem: [...formData][1],
+    inputType: "text",
+    regex: regexList.name,
     errorMessage: "Veuillez entrer 2 caractères ou plus pour le champ du nom."
   },
   email: {
-    input: inputsArray[2],
+    domElem: [...formData][2],
+    inputType: "text",
+    regex: regexList.email,
     errorMessage: "Veuillez entrer une adresse mail valide."
   },
   date: {
-    input: inputsArray[3],
+    domElem: [...formData][3],
+    inputType: "text",
+    regex: regexList.date,
     errorMessage: "Veuillez entrer une date valide."
   },
   number: {
-    input: inputsArray[4],
+    domElem: [...formData][4],
+    inputType: "text",
+    regex: regexList.number,
     errorMessage: "Vous devez entrer un nombre entre 0 et 99"
   },
   city: {
-    input: inputsArray[5],
+    domElem: [...formData][5],
+    inputType: "checkboxgroup",
     errorMessage: "Veuillez sélectionner une ville"
   },
   read: {
-    input: inputsArray[6],
+    domElem: [...formData][6],
+    inputType: "checkbox",
     errorMessage: "Vous devez avoir lu et approuvé les conditions d'utilisation"
   }
-}
+};
+
+// [...form].forEach(elem => {
+//   elem.addEventListener("change", handleError(elem))
+// })
 // form input check
 function checkInputs(){
-  let valid = true;
+  let valid = true
 
   // Checks each field for regex validation
-  if(!handleTypeError(form.firstName.input, regexList.name, form.firstName.errorMessage)) valid = false
-  if(!handleTypeError(form.lastName.input, regexList.name, form.lastName.errorMessage)) valid =false
-  if(!handleTypeError(form.email.input, regexList.email,form.email.errorMessage)) valid = false
-  if(!handleTypeError(form.date.input, regexList.date, form.date.errorMessage)) valid = false
-  if(!handleTypeError(form.number.input, regexList.number, form.number.errorMessage)) valid = false
+  if(!handleError(form.firstName)) valid = false
+  if(!handleError(form.lastName)) valid =false
+  if(!handleError(form.email)) valid = false
+  if(!handleError(form.date)) valid = false
+  if(!handleError(form.number)) valid = false
 
-  // city checkbox check
-  let citySelected = false
-  form.city.input.querySelectorAll("input").forEach(input => {
-    if(input.checked) citySelected = true
-  })
-  if(!citySelected) {
-    createError(form.city.input, form.city.errorMessage)
-  } else {
-    removeError(form.city.input)
-  }
-
-  // read & agree check
-  let readArgreement = false
-  console.log(form.read.input.querySelector("input").checked);
-  if(!form.read.input.querySelector("input").checked) {
-    createError(form.read.input, form.read.errorMessage)
-  } else {
-    readArgreement = true
-    removeError(form.read.input)
-  }
-
+  // checkbox validation
+  let citySelected = handleError(form.city)
+  let readArgreement = handleError(form.read)
   if(!citySelected || !readArgreement) valid = false
 
   return valid;
@@ -147,25 +171,29 @@ submitBtn.addEventListener("click", async (e)=>{
   // fetch request goes here
   //this next part is to be called asynchronuesly after the fetch
   console.log("ok!");
+  createValidation()
+})
 
-  //DOM modifications, removes the form and creates the confirmation elements
+//DOM modifications, removes the form and creates the confirmation elements
+
+function createValidation() {
+
   const modalBody = document.querySelector(".modal-body")
   const modalForm = document.querySelector("form");
   modalForm.style.display = "none";
   
-
+  
   const modalConfirmation = document.createElement("div");
   modalConfirmation.setAttribute("class", "modal-confirmation");
-
+  
   const confirmationP = document.createElement("p");
   confirmationP.innerText = "Merci pour votre inscription";
-
+  
   const confirmationBtn = document.createElement("button");
   confirmationBtn.innerText = "Fermer";
   confirmationBtn.setAttribute("class", "btn-submit btn-modal-close");
-
+  
   modalConfirmation.appendChild(confirmationP);
   modalConfirmation.appendChild(confirmationBtn);
   modalBody.appendChild(modalConfirmation);
-
-})
+}
