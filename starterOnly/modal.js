@@ -9,7 +9,7 @@ function editNav() {
 
 // DOM Elements
 const modalbg = document.querySelector(".bground");
-const modal = modalbg.querySelector(".content")
+const modal = modalbg.querySelector(".content");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const submitBtn = document.querySelector(".btn-submit");
@@ -19,8 +19,8 @@ modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
 // launch modal form
 function launchModal() {
-  const validation = document.querySelector(".modal-confirmation")
-  if(validation) document.querySelector(".modal-body").removeChild(validation)
+  const validation = document.querySelector(".modal-confirmation");
+  if(validation) document.querySelector(".modal-body").removeChild(validation);
   const modalForm = document.querySelector("form");
   modalForm.style.display = "block";
   modalbg.style.display = "block";
@@ -42,55 +42,6 @@ const regexList = {
   email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
   date: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/,
   number: /^[0-9][0-9]?$|^99$/
-};
-
-// error handling
-
-//removes the error message
-function removeError(domElem) {
-  domElem.removeAttribute("data-error")
-  domElem.removeAttribute("data-error-visible")
-};
-
-// creates the error message
-function createError(domElem, errorMessage) {
-  domElem.removeAttribute("data-validated")
-  domElem.setAttribute("data-error", errorMessage)
-  domElem.setAttribute("data-error-visible", "true")
-}
-
-//checks if the a string/digit input follows a given regex
-function handleError({domElem, inputType, errorMessage, regex}) {
-  let value
-  if (inputType === "text") { //verification for text inputs
-    value = domElem.querySelector(".text-control").value
-    if(!regex.test(value) || !value) {
-      createError(domElem, errorMessage);
-      return false
-    }
-  }
-  if (inputType === "checkbox") {
-    value = domElem.querySelector("input").checked
-    if (!value) {
-      createError(domElem, errorMessage);
-      return false
-    }
-  }
-  if (inputType === "checkboxgroup") {
-    boxes = domElem.querySelectorAll("input")
-    let checked = false
-    boxes.forEach( input => {
-      if(input.checked) checked = true
-    })
-    if(!checked) {
-      createError(domElem, errorMessage);
-      return false 
-    }
-  }
-
-  removeError(domElem)
-  domElem.setAttribute("data-validated", "true")
-  return true
 };
 
 //indivudual input declaration
@@ -137,6 +88,56 @@ const form = {
   }
 };
 
+// error handling
+
+//removes the error message
+function removeError(domElem) {
+  domElem.removeAttribute("data-error");
+  domElem.removeAttribute("data-error-visible");
+};
+
+// creates the error message
+function createError(domElem, errorMessage) {
+  domElem.removeAttribute("data-validated");
+  domElem.setAttribute("data-error", errorMessage);
+  domElem.setAttribute("data-error-visible", "true");
+};
+
+//checks if the a string/digit input follows a given regex
+function handleError({domElem, inputType, errorMessage, regex}) {
+  let value;
+  if (inputType === "text") { //verification for text inputs
+    value = domElem.querySelector(".text-control").value;
+    if(!regex.test(value) || !value) {
+      createError(domElem, errorMessage);
+      return false;
+    };
+  };
+  if (inputType === "checkbox") {
+    value = domElem.querySelector("input").checked;
+    if (!value) {
+      createError(domElem, errorMessage);
+      return false;
+    };
+  };
+  if (inputType === "checkboxgroup") {
+    boxes = domElem.querySelectorAll("input");
+    let checked = false;
+    boxes.forEach( input => {
+      if(input.checked) checked = true;
+    });
+    if(!checked) {
+      createError(domElem, errorMessage);
+      return false ;
+    };
+  };
+
+  removeError(domElem);
+  domElem.setAttribute("data-validated", "true");
+  return true;
+};
+
+// resets each input to make a new form
 function resetForm() {
   [...formData][0].querySelector(".text-control").value = "";
   [...formData][1].querySelector(".text-control").value = "";
@@ -144,24 +145,54 @@ function resetForm() {
   [...formData][3].querySelector(".text-control").value = "";
   [...formData][4].querySelector(".text-control").value = "";
   [...formData][5].querySelectorAll("input").forEach(input => {
-    input.checked = false
+    input.checked = false;
   });
+  const lastCheckboxes = [...formData][6].querySelectorAll("input");
+  lastCheckboxes[1].checked = false;
 };
 
+//eventListeners
+document.getElementById("first").addEventListener("input", ()=> {
+  handleError(form.firstName)
+});
+document.getElementById("last").addEventListener("input", ()=> {
+  handleError(form.lastName)
+});
+document.getElementById("email").addEventListener("input", ()=> {
+  handleError(form.email)
+});
+document.getElementById("birthdate").addEventListener("input", ()=> {
+  handleError(form.date)
+});
+document.getElementById("quantity").addEventListener("input", ()=> {
+  handleError(form.number)
+});
+document.getElementById("first").addEventListener("input", ()=> {
+  handleError(form.firstName)
+});
+[...formData][5].querySelectorAll(".checkbox-input").forEach(checkbox => {
+  checkbox.addEventListener("change", ()=> {
+    handleError(form.city);
+  })
+});
+[...formData][6].querySelector(".checkbox-input").addEventListener("change", ()=> {
+  handleError(form.read);
+});
+
 function checkInputs(){
-  let valid = true
+  let valid = true;
 
   // Checks each field for regex validation
-  if(!handleError(form.firstName)) valid = false
-  if(!handleError(form.lastName)) valid =false
-  if(!handleError(form.email)) valid = false
-  if(!handleError(form.date)) valid = false
-  if(!handleError(form.number)) valid = false
+  if(!handleError(form.firstName)) valid = false;
+  if(!handleError(form.lastName)) valid =false;
+  if(!handleError(form.email)) valid = false;
+  if(!handleError(form.date)) valid = false;
+  if(!handleError(form.number)) valid = false;
 
   // checkbox validation
-  let citySelected = handleError(form.city)
-  let readArgreement = handleError(form.read)
-  if(!citySelected || !readArgreement) valid = false
+  let citySelected = handleError(form.city);
+  let readArgreement = handleError(form.read);
+  if(!citySelected || !readArgreement) valid = false;
 
   return valid;
 };
@@ -169,7 +200,7 @@ function checkInputs(){
 // Submit function
 submitBtn.addEventListener("click", (e)=>{
   e.preventDefault();
-  // if(!checkInputs()) return
+  if(!checkInputs()) return
 
   // fetch request goes here
   //this next part is to be called asynchronuesly after the fetch
@@ -179,7 +210,7 @@ submitBtn.addEventListener("click", (e)=>{
   // The validation is being called after the timeout but it can be reworked so that the loader only appears during an actual loading time
   createValidation(document.querySelector(".modal-body"))
   resetForm();
-})
+});
 
 //DOM modifications, removes the form and creates the confirmation elements
 function createValidation(parentElem) {
