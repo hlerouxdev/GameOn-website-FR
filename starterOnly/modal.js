@@ -149,6 +149,10 @@ function resetForm() {
   });
   const lastCheckboxes = [...formData][6].querySelectorAll("input");
   lastCheckboxes[1].checked = false;
+
+  [...formData].forEach(elem => {
+    if(elem.dataset.validated) elem.removeAttribute("data-validated")
+  })
 };
 
 //eventListeners
