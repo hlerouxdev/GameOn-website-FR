@@ -68,7 +68,8 @@ img {
   display: none;
 }
 
-@media screen and (max-width: 768px) {
+/* originally set to 768px */
+@media screen and (max-width: 822px) {
   .topnav a {display: none;}
   .topnav a.icon {
     float: right;
@@ -76,7 +77,7 @@ img {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 822px) {
   .topnav.responsive {position: relative;}
   .topnav.responsive .icon {
     position: absolute;
@@ -88,6 +89,9 @@ img {
     display: block;
     text-align: left;
   }
+  .content {
+    top: 60px;
+  }
 }
 
 
@@ -98,6 +102,14 @@ img {
     float: right;
     display: block;
     /* margin-top: -15px; */
+  }
+  .hero-content {
+    width: 100%;
+    min-width: 200px;
+  }
+  .hero-content h1, .hero-content p {
+    min-width: 100px;
+    line-break: normal;
   }
 } 
 
@@ -479,7 +491,9 @@ footer {
   padding-right: 2vw;
   margin: 0 20px;
 }
-@media screen and (max-width: 800px) {
+
+/* originally set to 800px */
+@media screen and (max-width: 1023px) {
   .hero-section {
     display: block;
     box-shadow: unset;
