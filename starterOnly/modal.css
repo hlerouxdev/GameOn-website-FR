@@ -106,8 +106,10 @@ img {
   .hero-content {
     min-width: 200px !important;
   }
+  .hero-content h1 {
+    font-size: 3rem;
+  }
   .hero-content h1, .hero-content p {
-    min-width: 100px;
     line-break: normal;
   }
 } 
